@@ -11,9 +11,21 @@ services:
     image: banst/awscli
     container_name: app-node
     ports:
-     - "8080:8080"
+      - "8080:8080"
     environment:
       AWS_ACCESS_KEY_ID: 'DUMMYIDEXAMPLE'
       AWS_SECRET_ACCESS_KEY: 'DUMMYEXAMPLEKEY'
     command:
       dynamodb describe-limits --endpoint-url http://dynamodb-local:8000 --region us-west-2
+  golang-tecg-task:
+    depends_on:
+      - dynamodb-local
+    container_name: golang-tecg-task
+    build:
+      context: .
+    image: madhuri/golangtechtask:${TAG:-latest}
+    ports:
+      - "9090:9090"
+    env_file:
+      - compose.env
+
